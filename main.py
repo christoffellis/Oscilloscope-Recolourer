@@ -45,7 +45,7 @@ colour1Position = (58, 123)
 colour2Position = (30, 243)
 
 
-def convertImageToColour(imgDirectory, measureList, trigMeasure):
+def convertImageToColour(imgDirectory, measureList, trigMeasure, doColours):
     img = cv2.imread(imgDirectory)
 
     height = img.shape[0]
@@ -59,10 +59,12 @@ def convertImageToColour(imgDirectory, measureList, trigMeasure):
     grey = (238, 238, 238)
 
     # Fill selected lines with colours
-    cv2.floodFill(img, None, colour1Position, colour1, loDiff=(20, 20, 20, 20), upDiff=(20, 20, 20, 20),
-                  flags=cv2.FLOODFILL_FIXED_RANGE)
-    cv2.floodFill(img, None, colour2Position, colour2, loDiff=(20, 20, 20, 20), upDiff=(20, 20, 20, 20),
-                  flags=cv2.FLOODFILL_FIXED_RANGE)
+    if doColours[0]:
+        cv2.floodFill(img, None, colour1Position, colour1, loDiff=(20, 20, 20, 20), upDiff=(20, 20, 20, 20),
+                      flags=cv2.FLOODFILL_FIXED_RANGE)
+    if doColours[1]:
+        cv2.floodFill(img, None, colour2Position, colour2, loDiff=(20, 20, 20, 20), upDiff=(20, 20, 20, 20),
+                      flags=cv2.FLOODFILL_FIXED_RANGE)
 
     # Fill background colour with grey
     for x in range(xOffset - 2):
@@ -189,7 +191,8 @@ measureModeOptions = [0 for i in range(5)]
 changePosRects = []
 imgRects = []
 
-
+doColours = [True, False]
+doColoursRects = []
 def drawMenu(original, modified):
     global buttonList
     global buttonRects
@@ -228,6 +231,12 @@ def drawMenu(original, modified):
         else:
             pygame.draw.rect(screen, (255, 255, 255), rect, 2, 3)
             writeText(button, 30 + 90, 60 + i * 65, 15, 'white')
+    doColoursRects.clear()
+    for i in range(2):
+        rect = pygame.Rect(240, 95 + i * 65, 60, 60)
+        doColoursRects.append(rect)
+        pygame.draw.rect(screen, 'white', rect, 2, 3)
+        writeText(str(doColours[i]), 270, 125 + i * 65, 12, 'white')
 
     measureModeRects.clear()
     for i, mode in enumerate(measureModeOptions):
@@ -268,7 +277,7 @@ def drawMenu(original, modified):
 if __name__ == "__main__":
 
     myStr = 'US-maxVoltage.jpg'
-    img = convertImageToColour(myStr, measureModeOptions, trigChannelVal,)
+    img = convertImageToColour(myStr, measureModeOptions, trigChannelVal, doColours)
     originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
 
     changingPosVal = 0
@@ -279,6 +288,10 @@ if __name__ == "__main__":
                 pos = pygame.mouse.get_pos()
                 if imgRects[0].collidepoint(pos):
                     changingPosVal = 0
+
+                for i, b in enumerate(doColoursRects):
+                    if b.collidepoint(pos):
+                        doColours[i] = not doColours[i]
 
                 for i, b in enumerate(changePosRects):
                     if b.collidepoint(pos):
@@ -297,7 +310,7 @@ if __name__ == "__main__":
                                 ))
                             myStr = filename
                             print(myStr)
-                            newImg = convertImageToColour(myStr, measureModeOptions, trigChannelVal)
+                            newImg = convertImageToColour(myStr, measureModeOptions, trigChannelVal, doColours)
                             originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
                         if i == 1:  # Pressed colour 1
                             prevColour = colour1
@@ -310,17 +323,20 @@ if __name__ == "__main__":
                             if colour2 == None:
                                 colour2 = prevColour
                         if i == 3:  # Pressed math mode colour
+                            prevColour = mathModeColour
                             mathModeColour = colorchooser.askcolor(title="Choose color")[0]
+                            if mathModeColour == None:
+                                mathModeColour = prevColour
                         if i == 4:
                             trigChannelVal = (trigChannelVal + 1) % 4
                         if i == 5:  # Pressed refresh
-                            img = convertImageToColour(myStr, measureModeOptions, trigChannelVal)
+                            img = convertImageToColour(myStr, measureModeOptions, trigChannelVal, doColours)
                             originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
                         if i == 6:  # Pressed save
                             filename = filedialog.asksaveasfilename(initialdir='/', title='Save File', filetypes=(
                                 ('JPEG', '*.jpg'), ('All Files', '*.*')))
                             print(filename)
-                            cv2.imwrite(filename + '.jpg', img)
+                            cv2.imwrite(filename, img)
                         root.destroy()
                 for i, b in enumerate(measureModeRects):
                     if b.collidepoint(pos):
