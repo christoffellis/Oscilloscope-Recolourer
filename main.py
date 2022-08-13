@@ -267,9 +267,9 @@ def drawMenu(original, modified):
 
 if __name__ == "__main__":
 
-    myStr = 'US-maxVoltage'
-    img = convertImageToColour(myStr + '.jpg', measureModeOptions, trigChannelVal,)
-    originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr + '.jpg'))
+    myStr = 'US-maxVoltage.jpg'
+    img = convertImageToColour(myStr, measureModeOptions, trigChannelVal,)
+    originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
 
     changingPosVal = 0
     while True:
@@ -296,8 +296,9 @@ if __name__ == "__main__":
                                     ('All files', '*.*')
                                 ))
                             myStr = filename
-                            img = convertImageToColour(myStr + '.jpg', measureModeOptions, trigChannelVal)
-                            originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr + '.jpg'))
+                            print(myStr)
+                            newImg = convertImageToColour(myStr, measureModeOptions, trigChannelVal)
+                            originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
                         if i == 1:  # Pressed colour 1
                             prevColour = colour1
                             colour1 = colorchooser.askcolor(title="Choose color")[0]
@@ -313,8 +314,8 @@ if __name__ == "__main__":
                         if i == 4:
                             trigChannelVal = (trigChannelVal + 1) % 4
                         if i == 5:  # Pressed refresh
-                            img = convertImageToColour(myStr + '.jpg', measureModeOptions, trigChannelVal)
-                            originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr + '.jpg'))
+                            img = convertImageToColour(myStr, measureModeOptions, trigChannelVal)
+                            originalImg = convert_opencv_img_to_pygame(cv2.imread(myStr))
                         if i == 6:  # Pressed save
                             filename = filedialog.asksaveasfilename(initialdir='/', title='Save File', filetypes=(
                                 ('JPEG', '*.jpg'), ('All Files', '*.*')))
