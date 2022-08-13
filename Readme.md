@@ -9,4 +9,8 @@ Note: If the tracelines of a voltage signal overlap the predrawn dots on a scree
 Feel free to commit a change if you write a function that circumvents this, or handles other menus.
 
 ## How to use
-To use the recolourer, click on the coordinate buttons, and then on the line your like to recolour. If one of the channels isnt in use, toggle it to false next to the channel name on the left. You can also state which channel is being measured by toggling the buttons on the right hand side on the bottom. To change the colour of a line, just click on its name in the upper left hand corner. Finally, once your satisfied, click the save button.
+To use the recolourer, click on the coordinate buttons, and then on the line your like to recolour.
+If one of the channels isn't in use, toggle it to false next to the channel name on the left.
+You can state which channel is being measured by toggling the buttons on the right hand side on the bottom.
+To change the colour of a line, just click on its name in the upper left hand corner.
+Finally, once your satisfied, click the save button.
